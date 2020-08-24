@@ -1,13 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser')
-const bcrypt = require('bcrypt-nodejs')
 const app = express();
 const cors = require('cors');
 const knex = require('knex');
 app.use(bodyParser.json())
 app.use(cors());
 
-
+//Connect to database
 const db = knex({
   client: 'pg',
   connection: {
@@ -18,17 +17,14 @@ const db = knex({
 }
 });
 
-
-
-
+//Get user's data from database
 app.get('/', (req, res)=>{
 	 db.select('*').from ('users').then(user=>{
       res.send(user);
     })
-
 })
 
-
+//Update database and send all new user's data
 app.post('/create', (req, res) => {
    let {email, name, nation, title, linkedin, github} = req.body;
    if (!email || !name|| !nation ){
@@ -37,11 +33,9 @@ app.post('/create', (req, res) => {
    if (title ===''){
       title = 'None'
    }
-
    if (linkedin ===''){
       linkedin = 'None'
    }
-
    if (github ===''){
       github = 'None'
    }
@@ -57,16 +51,14 @@ app.post('/create', (req, res) => {
       github: github,
       joined: new Date()
    })
-
+	
    .then(user=>{
-      res.json(user[0]);
+      res.json('Update successed!);
    })
    .catch(err=> res.status(400).json('failed to create robofriends'))
 })
 
-
-
-
+// Testing on local host
 app.listen(process.env.PORT || 3000, ()=>{
   console.log(`app is running on port ${process.env.PORT}`)
 }) 
