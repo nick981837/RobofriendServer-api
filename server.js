@@ -19,17 +19,19 @@ const db = knex({
 
 //Get user's data from database
 app.get('/', (req, res)=>{
-	 db.select('*').from ('users').then(user=>{
-      res.send(user);
+	 db.select('*').from ('users')
+         .then(user=>{res.send(user);
     })
 })
 
 //Update database and send all new user's data
 app.post('/create', (req, res) => {
+//Check whether necessary input is valid
    let {email, name, nation, title, linkedin, github} = req.body;
    if (!email || !name|| !nation ){
-     return res.status(400).json('incorrect form submission ')
+     return res.status(400).json('incorrect form submission')
    }
+// If option input is empty, convert it to 'None' value
    if (title ===''){
       title = 'None'
    }
@@ -41,7 +43,6 @@ app.post('/create', (req, res) => {
    }
 
    db('users')
-   .returning('*')
    .insert({
       email: email,
       name: name,
